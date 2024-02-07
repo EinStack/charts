@@ -1,3 +1,7 @@
+{{- /*
+Copyright EinStack
+SPDX-License-Identifier: APACHE-2.0
+*/}}
 {{- if .Values.ingress.enabled -}}
 {{- $fullName := include "glide.fullname" . -}}
 {{- $svcPort := .Values.service.port -}}

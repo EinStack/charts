@@ -1,3 +1,7 @@
+{{- /*
+Copyright EinStack
+SPDX-License-Identifier: APACHE-2.0
+*/}}
 {{- define "glide.pod" -}}
 {{- with .Values.imagePullSecrets }}
 imagePullSecrets:

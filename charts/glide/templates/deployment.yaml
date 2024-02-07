@@ -1,8 +1,12 @@
+{{- /*
+Copyright EinStack
+SPDX-License-Identifier: APACHE-2.0
+*/}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ include "glide.fullname" . }}
-  namespace: {{ include "glide.namespace" }}
+  namespace: {{ include "glide.namespace" . }}
   labels:
     {{- include "glide.labels" . | nindent 4 }}
 spec:
@@ -28,5 +32,5 @@ spec:
       dnsConfig:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      {{ include "glide.pod" . | nindent 6 }}
       hostNetwork: {{ .Values.hostNetwork }}
-      {{ include "glide.pod"}}

@@ -1,8 +1,12 @@
+{{- /*
+Copyright EinStack
+SPDX-License-Identifier: APACHE-2.0
+*/}}
 apiVersion: v1
 kind: Service
 metadata:
   name: {{ include "glide.fullname" . }}
-  namespace: {{ include "glide.namespace" }}
+  namespace: {{ include "glide.namespace" . }}
   labels:
     {{- include "glide.labels" . | nindent 4 }}
 spec:

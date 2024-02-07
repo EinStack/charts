@@ -1,3 +1,7 @@
+{{- /*
+Copyright EinStack
+SPDX-License-Identifier: APACHE-2.0
+*/}}
 {{/*
 Create the name of the service account to use
 */}}
