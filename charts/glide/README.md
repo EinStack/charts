@@ -4,7 +4,13 @@ The helm chart installs [Glide](https://github.com/EinStack/glide/) in a Kuberne
 
 ## Installation
 
-coming soon
+### Install from Source
+
+Close this repository and run the following Helm command to install Glide into a cluster you have authenticated with:
+
+```bash
+helm upgrade test-glide2 ./charts/glide --install
+```
 
 ## Parameters
 

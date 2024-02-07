@@ -29,7 +29,7 @@ namespaceOverride: ""
 ##
 image:
   repository: ghcr.io/einstack/glide
-  tag: ""
+  tag: "0.0.1-distroless"
   pullPolicy: IfNotPresent
   pullSecrets: []
 
@@ -221,5 +221,5 @@ affinity: {}
 ## @param podDisruptionBudget.maxUnavailable Max number of unavailable replicas at the same time
 podDisruptionBudget:
   enabled: true
-  minAvailable: 2
-  maxUnavailable: 1
+  minAvailable: "2"
+  maxUnavailable: ""
