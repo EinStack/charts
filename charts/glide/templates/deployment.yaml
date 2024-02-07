@@ -30,7 +30,8 @@ spec:
         {{- toYaml . | nindent 8 }}
         {{- end }}
     spec:
-      automountServiceAccountToken: {{- .Values.serviceAccount.automountServiceAccountToken }}
+      serviceAccountName: {{ include "glide.serviceAccountName" . }}
+      automountServiceAccountToken: {{ .Values.serviceAccount.automountServiceAccountToken }}
       priorityClassName: {{ .Values.priorityClassName | quote }}
       {{- with .Values.dnsPolicy }}
       dnsPolicy: {{ . }}

@@ -8,14 +8,16 @@ SPDX-License-Identifier: APACHE-2.0
 imagePullSecrets:
 {{- toYaml . | nindent 8 }}
 {{- end }}
-serviceAccountName: {{ include "glide.serviceAccountName" . }}
-priorityClassName: {{ .Values.priorityClassName | quote }}
+{{- if .Values.podSecurityContext.enabled }}
 securityContext:
-{{- toYaml .Values.podSecurityContext | nindent 8 }}
+{{- omit .Values.podSecurityContext "enabled" | toYaml | nindent 8 }}
+{{- end }}
 containers:
 - name: {{ .Chart.Name }}
+  {{- if .Values.securityContext.enabled }}
   securityContext:
-    {{- toYaml .Values.securityContext | nindent 12 }}
+    {{- omit .Values.securityContext "enabled" | toYaml | nindent 8 }}
+  {{- end }}
   image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
   imagePullPolicy: {{ .Values.image.pullPolicy }}
   ports:
