@@ -2,12 +2,14 @@
 Copyright EinStack
 SPDX-License-Identifier: APACHE-2.0
 */}}
+
 {{- define "glide.pod" -}}
-{{- with .Values.imagePullSecrets }}
+{{- with .Values.image.pullSecrets }}
 imagePullSecrets:
 {{- toYaml . | nindent 8 }}
 {{- end }}
 serviceAccountName: {{ include "glide.serviceAccountName" . }}
+priorityClassName: {{ .Values.priorityClassName | quote }}
 securityContext:
 {{- toYaml .Values.podSecurityContext | nindent 8 }}
 containers:
