@@ -42,6 +42,22 @@ resources:
   limits: {}
   requests: {}
 
+## @param replicaCount The number of replicas to create (more than two are recommended to have some redundancy)
+replicaCount: 3
+
+## @param podAnnotations Pod annotations
+## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
+##
+podAnnotations: {}
+
+## @param podLabels Add additional labels to the pod
+## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
+##
+podLabels: {}
+
+## @section Security Parameters
+##
+
 ## Service account for Glide to use.
 ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/
 ##
@@ -60,21 +76,6 @@ serviceAccount:
   ## @param serviceAccount.annotations Additional custom annotations for the ServiceAccount
   ##
   annotations: {}
-
-replicaCount: 3
-
-## @param podAnnotations Pod annotations
-## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
-##
-podAnnotations: {}
-
-## @param podLabels Add additional labels to the pod
-## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
-##
-podLabels: {}
-
-## @section Security Parameters
-##
 
 ## Configure Pods Security Context
 ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-pod
@@ -134,6 +135,8 @@ service:
   ## @param service.type Kubernetes Service type
   ##
   type: ClusterIP
+  ## @param service.port Kubernetes Service port
+  ##
   port: 80
   ## @param service.annotations Additional custom annotations for Gitea service
   ##
@@ -164,6 +167,7 @@ ingress:
   ##   cert-manager.io/cluster-issuer: cluster-issuer-name
   ##
   annotations: {}
+  ## @param ingress.hosts The list of public hosts to be covered with this ingress record.
   hosts:
     - host: chart-example.local
       paths:
@@ -181,12 +185,19 @@ ingress:
 ##
 priorityClassName: ""
 
+## Autoscaling configuration
+## @param autoscaling.enabled Enable autoscaling for replicas (recommended if load is variable)
+## @param autoscaling.minReplicas Minimum number of replicas
+## @param autoscaling.maxReplicas Maximum number of replicas
+## @param autoscaling.targetCPUUtilizationPercentage Target CPU utilization percentage
+## @param autoscaling.targetMemoryUtilizationPercentage Target Memory utilization percentage
+##
 autoscaling:
   enabled: false
   minReplicas: 3
   maxReplicas: 15
-  targetCPUUtilizationPercentage: 80
-  # targetMemoryUtilizationPercentage: 80
+  targetCPUUtilizationPercentage: "80"
+  targetMemoryUtilizationPercentage: ""
 
 ## @param nodeSelector Node labels for pod assignment.
 ## ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/
