@@ -20,15 +20,15 @@ containers:
   imagePullPolicy: {{ .Values.image.pullPolicy }}
   ports:
     - name: http
-      containerPort: 80
+      containerPort: 9099
       protocol: TCP
   livenessProbe:
     httpGet:
-      path: /
+      path: /health/
       port: http
   readinessProbe:
     httpGet:
-      path: /
+      path: /health/
       port: http
   resources:
     {{- toYaml .Values.resources | nindent 12 }}
