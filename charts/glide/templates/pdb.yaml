@@ -1,0 +1,21 @@
+{{- /*
+Copyright EinStack
+SPDX-License-Identifier: APACHE-2.0
+*/}}
+apiVersion: {{ include "podDisruptionBudget.apiVersion" . }}
+kind: PodDisruptionBudget
+metadata:
+  name: {{ include "glide.fullname" . }}
+  namespace: {{ template "glide.namespace" . }}
+  labels:
+    {{- include "glide.labels" . | nindent 4 }}
+spec:
+  {{- if .Values.podDisruptionBudget.minAvailable }}
+  minAvailable: {{ .Values.podDisruptionBudget.minAvailable }}
+  {{- end  }}
+  {{- if .Values.podDisruptionBudget.maxUnavailable }}
+  maxUnavailable: {{ .Values.podDisruptionBudget.maxUnavailable }}
+  {{- end  }}
+  selector:
+    matchLabels:
+      {{- include "glide.selectorLabels" . | nindent 6 }}

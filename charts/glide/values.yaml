@@ -2,50 +2,244 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-replicaCount: 1
+## @section Common parameters
+##
 
-image:
-  repository: nginx
-  pullPolicy: IfNotPresent
-  # Overrides the image tag whose default is the chart appVersion.
-  tag: ""
-
-imagePullSecrets: []
+## @param nameOverride String to partially override glide.fullname template (will maintain the release name)
+##
 nameOverride: ""
+
+## @param fullnameOverride String to fully override glide.fullname template
+##
 fullnameOverride: ""
 
-serviceAccount:
-  # Specifies whether a service account should be created
-  create: true
-  # Annotations to add to the service account
-  annotations: {}
-  # The name of the service account to use.
-  # If not set and create is true, a name is generated using the fullname template
-  name: ""
+## @param namespaceOverride String to fully override common.names.namespace
+##
+namespaceOverride: ""
 
+## @section Glide parameters
+##
+
+## Glide image version
+## ref: https://github.com/EinStack/glide/pkgs/container/glide
+## @param image.repository [default: ghcr.io/einstack/glide] Glide Image name
+## @param image.tag Glide Image tag or a digest (in a form of sha256:aa..)
+## @param image.pullPolicy Glide image pull policy
+## @param image.pullSecrets Specify docker-registry secret names as an array
+##
+image:
+  repository: ghcr.io/einstack/glide
+  tag: "0.0.1-alpine"
+  pullPolicy: IfNotPresent
+  pullSecrets: []
+
+## @param replicaCount The number of replicas to create (more than two are recommended to have some redundancy)
+replicaCount: 3
+
+## @section Glide Configs
+##
+
+glide:
+  ## @param glide.command Override default container command (useful when using custom images)
+  ##
+  command: []
+
+  ## @param glide.args Override default container args (useful when using custom images)
+  ##
+  args: ["--config=/etc/glide/config.yaml"]
+
+  ## @param glide.ports.gatewayHTTP Override default Glide HTTP server port
+  ##
+  ports:
+    gatewayHTTP: 9099
+
+  ## @param glide.config Glide declarative configuration (deployed as a configmap)
+  ## ref: https://glide.einstack.ai
+  ##
+  config: |
+    api:
+      http:
+        host: 0.0.0.0
+        port: 9099
+    routers:
+      language:
+        - id: default
+          models:
+            - id: openai
+              openai:
+                api_key: "${env:OPENAI_API_KEY}"
+
+  ## @param glide.externalConfigmap An external existing configmap with Glide declarative configuration
+  ## ref: https://glide.einstack.ai
+  ##
+  externalConfigmap: ""
+
+  ## @param glide.apiKeySecret An external existing secret with API keys referenced in the config (e.g. OPENAI_API_KEY)
+  ## ref: https://glide.einstack.ai
+  ##
+  apiKeySecret: ""
+
+  ## @param glide.extraEnvVars Array containing extra env vars to configure Kong
+  ## For example:
+  ## extraEnvVars:
+  ##  - name: GF_DEFAULT_INSTANCE_NAME
+  ##    value: my-instance
+  ##
+  extraEnvVars: []
+
+  ## @param glide.extraEnvVarsFromConfigmap ConfigMap containing extra env vars to configure Glide
+  ##
+  extraEnvVarsFromConfigmap: ""
+
+  ## @param glide.extraEnvVarSecrets An array of secrets containing extra sensitive env vars to configure Glide
+  ##
+  extraEnvVarSecrets: []
+
+  ## @param glide.lifecycleHooks Lifecycle hooks (Glide container)
+  ## ref: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/
+  ##
+  lifecycleHooks: {}
+
+  ## @param glide.extraVolumes Array of extra volumes to be added to the Glide deployment. Requires setting `extraVolumeMounts`
+  ##
+  extraVolumes: []
+
+  ## @param glide.extraVolumeMounts Array of extra volume mounts to be added to the Glide Container. Normally used with `extraVolumes`.
+  ##
+  extraVolumeMounts: []
+
+## Glide container's resource requests and limits
+## ref: http://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/
+## @param resources.requests [object] The requested resources for the init container
+## @param resources.limits The resources limits for the init container
+##
+resources:
+  limits: {}
+  requests: {}
+
+## @param podAnnotations Pod annotations
+## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
+##
 podAnnotations: {}
 
-podSecurityContext: {}
-  # fsGroup: 2000
+## @param podLabels Add additional labels to the pod
+## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
+##
+podLabels: {}
 
-securityContext: {}
-  # capabilities:
-  #   drop:
-  #   - ALL
-  # readOnlyRootFilesystem: true
-  # runAsNonRoot: true
-  # runAsUser: 1000
+## @section Security Parameters
+##
 
-service:
-  type: ClusterIP
-  port: 80
-
-ingress:
-  enabled: false
-  className: ""
+## Service account for Glide to use.
+## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/
+##
+serviceAccount:
+  ## @param serviceAccount.create Enable creation of ServiceAccount for Gitea pod
+  ##
+  create: true
+  ## @param serviceAccount.name The name of the ServiceAccount to use.
+  ## If not set and create is true, a name is generated using the common.names.fullname template
+  ##
+  name: ""
+  ## @param serviceAccount.automountServiceAccountToken Allows auto mount of ServiceAccountToken on the serviceAccount created
+  ## Can be set to false if pods using this serviceAccount do not need to use K8s API
+  ##
+  automountServiceAccountToken: false
+  ## @param serviceAccount.annotations Additional custom annotations for the ServiceAccount
+  ##
   annotations: {}
-    # kubernetes.io/ingress.class: nginx
-    # kubernetes.io/tls-acme: "true"
+
+## Configure Pods Security Context
+## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-pod
+## @param podSecurityContext.enabled Enable Gitea pods' Security Context
+## @param podSecurityContext.fsGroupChangePolicy Set filesystem group change policy
+## @param podSecurityContext.sysctls Set kernel settings using the sysctl interface
+## @param podSecurityContext.supplementalGroups Set filesystem extra groups
+## @param podSecurityContext.fsGroup Gitea pods' group ID
+##
+podSecurityContext:
+  enabled: true
+  fsGroupChangePolicy: Always
+  sysctls: []
+  supplementalGroups: []
+  fsGroup: 1001
+
+## Configure Container Security Context (only main container)
+## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-container
+## @param securityContext.enabled Enabled containers' Security Context
+## @param securityContext.seLinuxOptions [object,nullable] Set SELinux options in container
+## @param securityContext.runAsUser Set containers' Security Context runAsUser
+## @param securityContext.runAsNonRoot Set container's Security Context runAsNonRoot
+## @param securityContext.privileged Set container's Security Context privileged
+## @param securityContext.readOnlyRootFilesystem Set container's Security Context readOnlyRootFilesystem
+## @param securityContext.allowPrivilegeEscalation Set container's Security Context allowPrivilegeEscalation
+## @param securityContext.capabilities.drop List of capabilities to be dropped
+## @param securityContext.seccompProfile.type Set container's Security Context seccomp profile
+##
+securityContext:
+  enabled: true
+  seLinuxOptions: null
+  runAsUser: 1001
+  runAsNonRoot: true
+  privileged: false
+  readOnlyRootFilesystem: true
+  allowPrivilegeEscalation: false
+  capabilities:
+    drop: ["ALL"]
+  seccompProfile:
+    type: "RuntimeDefault"
+
+## @section Traffic Exposure Parameters
+##
+
+## @param hostNetwork Host networking requested for this pod. Use the host's network namespace.
+hostNetwork: false
+
+## @param dnsPolicy Pod DNS policy ClusterFirst, ClusterFirstWithHostNet, None, Default, None
+dnsPolicy: ""
+
+## @param dnsConfig Custom DNS config. Required when DNS policy is None.
+dnsConfig: {}
+
+## Kubernetes configuration. For minikube, set this to NodePort, elsewhere use ClusterIP
+##
+service:
+  ## @param service.type Kubernetes Service type
+  ##
+  type: ClusterIP
+  ## @param service.port Kubernetes Service port
+  ##
+  port: 9099
+  ## @param service.annotations Additional custom annotations for Gitea service
+  ##
+  annotations: {}
+
+## Configure the ingress resource that allows you to access the
+## Gitea installation. Set up the URL
+## ref: https://kubernetes.io/docs/concepts/services-networking/ingress/
+##
+ingress:
+  ## @param ingress.enabled Enable ingress controller resource
+  ##
+  enabled: false
+  ## @param ingress.className IngressClass that will be be used to implement the Ingress (Kubernetes 1.18+)
+  ## This is supported in Kubernetes 1.18+ and required if you have more than one IngressClass marked as the default for your cluster .
+  ## ref: https://kubernetes.io/blog/2020/04/02/improvements-to-the-ingress-api-in-kubernetes-1.18/
+  ##
+  className: ""
+  ## @param ingress.annotations Additional annotations for the Ingress resource. To enable certificate autogeneration, place here your cert-manager annotations.
+  ## For a full list of possible ingress annotations, please see
+  ## ref: https://github.com/kubernetes/ingress-nginx/blob/main/docs/user-guide/nginx-configuration/annotations.md
+  ## Use this parameter to set the required annotations for cert-manager, see
+  ## ref: https://cert-manager.io/docs/usage/ingress/#supported-annotations
+  ##
+  ## e.g:
+  ## annotations:
+  ##   kubernetes.io/ingress.class: nginx
+  ##   cert-manager.io/cluster-issuer: cluster-issuer-name
+  ##
+  annotations: {}
+  ## @param ingress.hosts The list of public hosts to be covered with this ingress record.
   hosts:
     - host: chart-example.local
       paths:
@@ -56,27 +250,49 @@ ingress:
   #    hosts:
   #      - chart-example.local
 
-resources: {}
-  # We usually recommend not to specify default resources and to leave this as a conscious
-  # choice for the user. This also increases chances charts run on environments with little
-  # resources, such as Minikube. If you do want to specify resources, uncomment the following
-  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-  # limits:
-  #   cpu: 100m
-  #   memory: 128Mi
-  # requests:
-  #   cpu: 100m
-  #   memory: 128Mi
+## @section Scheduling Parameters
+##
 
+## @param priorityClassName Glide pods' priorityClassName
+##
+priorityClassName: ""
+
+## Autoscaling configuration
+## @param autoscaling.enabled Enable autoscaling for replicas (recommended if load is variable)
+## @param autoscaling.minReplicas Minimum number of replicas
+## @param autoscaling.maxReplicas Maximum number of replicas
+## @param autoscaling.targetCPUUtilizationPercentage Target CPU utilization percentage
+## @param autoscaling.targetMemoryUtilizationPercentage Target Memory utilization percentage
+##
 autoscaling:
   enabled: false
-  minReplicas: 1
-  maxReplicas: 100
-  targetCPUUtilizationPercentage: 80
-  # targetMemoryUtilizationPercentage: 80
+  minReplicas: 3
+  maxReplicas: 15
+  targetCPUUtilizationPercentage: "80"
+  targetMemoryUtilizationPercentage: ""
 
+## @param nodeSelector Node labels for pod assignment.
+## ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/
+##
 nodeSelector: {}
 
+## @param tolerations Tolerations for pod assignment
+## Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+##
 tolerations: []
 
+## @param affinity Affinity for pod assignment
+## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+##
 affinity: {}
+
+## Pod Disruption Budget for the main pod
+## ref: https://kubernetes.io/docs/concepts/workloads/pods/disruptions/
+## @param podDisruptionBudget.enabled Enabled Pod Disruption Budget (highly recommended)
+## @param podDisruptionBudget.minAvailable Minium number of available replicas during disruption (not less than two is recommended)
+## @param podDisruptionBudget.maxUnavailable Max number of unavailable replicas at the same time
+podDisruptionBudget:
+  enabled: true
+  minAvailable: "2"
+  maxUnavailable: ""
+

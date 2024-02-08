@@ -1,0 +1,17 @@
+{{- /*
+Copyright EinStack
+SPDX-License-Identifier: APACHE-2.0
+*/}}
+
+{{- if and .Values.glide.config (not .Values.glide.externalConfigmap) }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "glide.configmap" . }}
+  namespace: {{ include "glide.namespace" . }}
+  labels:
+    {{- include "glide.labels" . | nindent 4 }}
+data:
+  config.yaml: |-
+    {{- toYaml .Values.glide.config | nindent 4 }}
+{{- end }}

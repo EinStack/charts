@@ -1,8 +1,13 @@
+{{- /*
+Copyright EinStack
+SPDX-License-Identifier: APACHE-2.0
+*/}}
 {{- if .Values.autoscaling.enabled }}
 apiVersion: autoscaling/v2beta1
 kind: HorizontalPodAutoscaler
 metadata:
   name: {{ include "glide.fullname" . }}
+  namespace: {{ include "glide.namespace" }}
   labels:
     {{- include "glide.labels" . | nindent 4 }}
 spec:

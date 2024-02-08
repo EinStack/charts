@@ -1,8 +1,7 @@
-# Glide Helm Charts
+# Helm Charts
 
-This repository contains [Helm](https://helm.sh/) charts for [the Glide project](https://github.com/EinStack/glide).
+This repository contains [Helm](https://helm.sh/) charts for [the EinStack projects](https://github.com/EinStack/).
 
-## Installation
+## Charts
 
-Coming soon
-
+- [Glide Chart](./charts/README.md)
