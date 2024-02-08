@@ -4,4 +4,4 @@ This repository contains [Helm](https://helm.sh/) charts for [the EinStack proje
 
 ## Charts
 
-- [Glide Chart](./charts/README.md)
+- [Glide Chart](./charts/glide/README.md)
