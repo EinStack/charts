@@ -4,12 +4,26 @@ The helm chart installs [Glide](https://github.com/EinStack/glide/) in a Kuberne
 
 ## Installation
 
+Before installing the Helm chart, you need to create a Kubernetes secret with your API keys like:
+
+```bash
+kubectl create secret generic api-keys --from-literal=OPENAI_API_KEY=sk-abcdXYZ
+```
+
+Then, you need to create a custom `values.yaml` file to override the secret name like:
+
+```bash
+# save as custom.values.yaml, for example
+glide:
+    extraEnvVarsSecret: "api-keys"
+```
+
 ### Install from Source
 
 Close this repository and run the following Helm command to install Glide into a cluster you have authenticated with:
 
 ```bash
-helm upgrade test-glide2 ./charts/glide --install
+helm upgrade glide-gateway ./charts/glide --values custom.values.yaml --install
 ```
 
 ## Parameters

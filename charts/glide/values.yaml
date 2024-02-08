@@ -29,7 +29,7 @@ namespaceOverride: ""
 ##
 image:
   repository: ghcr.io/einstack/glide
-  tag: "0.0.1-distroless"
+  tag: "0.0.1-alpine"
   pullPolicy: IfNotPresent
   pullSecrets: []
 
@@ -67,7 +67,7 @@ glide:
           models:
             - id: openai
               openai:
-                api_key: "abc"
+                api_key: "${env:OPENAI_API_KEY}"
 
   ## @param glide.externalConfigmap An external existing configmap with Glide declarative configuration
   ## ref: https://glide.einstack.ai
