@@ -38,17 +38,45 @@ helm upgrade glide-gateway ./charts/glide --values custom.values.yaml --install
 
 ### Glide parameters
 
-| Name                 | Description                                                                              | Value                    |
-| -------------------- | ---------------------------------------------------------------------------------------- | ------------------------ |
-| `image.repository`   | Glide Image name                                                                         | `ghcr.io/einstack/glide` |
-| `image.tag`          | Glide Image tag or a digest (in a form of sha256:aa..)                                   | `""`                     |
-| `image.pullPolicy`   | Glide image pull policy                                                                  | `IfNotPresent`           |
-| `image.pullSecrets`  | Specify docker-registry secret names as an array                                         | `[]`                     |
-| `resources.requests` | The requested resources for the init container                                           | `{}`                     |
-| `resources.limits`   | The resources limits for the init container                                              | `{}`                     |
-| `replicaCount`       | The number of replicas to create (more than two are recommended to have some redundancy) | `3`                      |
-| `podAnnotations`     | Pod annotations                                                                          | `{}`                     |
-| `podLabels`          | Add additional labels to the pod                                                         | `{}`                     |
+| Name                | Description                                                                              | Value                    |
+| ------------------- | ---------------------------------------------------------------------------------------- | ------------------------ |
+| `image.repository`  | Glide Image name                                                                         | `ghcr.io/einstack/glide` |
+| `image.tag`         | Glide Image tag or a digest (in a form of sha256:aa..)                                   | `0.0.1-alpine`           |
+| `image.pullPolicy`  | Glide image pull policy                                                                  | `IfNotPresent`           |
+| `image.pullSecrets` | Specify docker-registry secret names as an array                                         | `[]`                     |
+| `replicaCount`      | The number of replicas to create (more than two are recommended to have some redundancy) | `3`                      |
+
+### Glide Configs
+
+| Name                              | Description                                                                                         | Value                                                                                                                                                                                     |
+| --------------------------------- | --------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `glide.command`                   | Override default container command (useful when using custom images)                                | `[]`                                                                                                                                                                                      |
+| `glide.args`                      | Override default container args (useful when using custom images)                                   | `["--config=/etc/glide/config.yaml"]`                                                                                                                                                     |
+| `glide.ports.gatewayHTTP`         | Override default Glide HTTP server port                                                             | `9099`                                                                                                                                                                                    |
+| `glide.config`                    | Glide declarative configuration (deployed as a configmap)                                           | `api:
+  http:
+    host: 0.0.0.0
+    port: 9099
+routers:
+  language:
+    - id: default
+      models:
+        - id: openai
+          openai:
+            api_key: "${env:OPENAI_API_KEY}"
+` |
+| `glide.externalConfigmap`         | An external existing configmap with Glide declarative configuration                                 | `""`                                                                                                                                                                                      |
+| `glide.apiKeySecret`              | An external existing secret with API keys referenced in the config (e.g. OPENAI_API_KEY)            | `""`                                                                                                                                                                                      |
+| `glide.extraEnvVars`              | Array containing extra env vars to configure Kong                                                   | `[]`                                                                                                                                                                                      |
+| `glide.extraEnvVarsFromConfigmap` | ConfigMap containing extra env vars to configure Glide                                              | `""`                                                                                                                                                                                      |
+| `glide.extraEnvVarSecrets`        | An array of secrets containing extra sensitive env vars to configure Glide                          | `[]`                                                                                                                                                                                      |
+| `glide.lifecycleHooks`            | Lifecycle hooks (Glide container)                                                                   | `{}`                                                                                                                                                                                      |
+| `glide.extraVolumes`              | Array of extra volumes to be added to the Glide deployment. Requires setting `extraVolumeMounts`    | `[]`                                                                                                                                                                                      |
+| `glide.extraVolumeMounts`         | Array of extra volume mounts to be added to the Glide Container. Normally used with `extraVolumes`. | `[]`                                                                                                                                                                                      |
+| `resources.requests`              | The requested resources for the init container                                                      | `{}`                                                                                                                                                                                      |
+| `resources.limits`                | The resources limits for the init container                                                         | `{}`                                                                                                                                                                                      |
+| `podAnnotations`                  | Pod annotations                                                                                     | `{}`                                                                                                                                                                                      |
+| `podLabels`                       | Add additional labels to the pod                                                                    | `{}`                                                                                                                                                                                      |
 
 ### Security Parameters
 
@@ -75,17 +103,14 @@ helm upgrade glide-gateway ./charts/glide --values custom.values.yaml --install
 
 ### Traffic Exposure Parameters
 
-| Name                  | Description                                                                                                                      | Value       |
-| --------------------- | -------------------------------------------------------------------------------------------------------------------------------- | ----------- |
-| `hostNetwork`         | Host networking requested for this pod. Use the host's network namespace.                                                        | `false`     |
-| `dnsPolicy`           | Pod DNS policy ClusterFirst, ClusterFirstWithHostNet, None, Default, None                                                        | `""`        |
-| `dnsConfig`           | Custom DNS config. Required when DNS policy is None.                                                                             | `{}`        |
-| `service.type`        | Kubernetes Service type                                                                                                          | `ClusterIP` |
-| `service.port`        | Kubernetes Service port                                                                                                          | `80`        |
-| `service.annotations` | Additional custom annotations for Gitea service                                                                                  | `{}`        |
-| `ingress.enabled`     | Enable ingress controller resource                                                                                               | `false`     |
-| `ingress.className`   | IngressClass that will be be used to implement the Ingress (Kubernetes 1.18+)                                                    | `""`        |
-| `ingress.annotations` | Additional annotations for the Ingress resource. To enable certificate autogeneration, place here your cert-manager annotations. | `{}`        |
+| Name                  | Description                                                               | Value       |
+| --------------------- | ------------------------------------------------------------------------- | ----------- |
+| `hostNetwork`         | Host networking requested for this pod. Use the host's network namespace. | `false`     |
+| `dnsPolicy`           | Pod DNS policy ClusterFirst, ClusterFirstWithHostNet, None, Default, None | `""`        |
+| `dnsConfig`           | Custom DNS config. Required when DNS policy is None.                      | `{}`        |
+| `service.type`        | Kubernetes Service type                                                   | `ClusterIP` |
+| `service.port`        | Kubernetes Service port                                                   | `9099`      |
+| `service.annotations` | Additional custom annotations for Gitea service                           | `{}`        |
 
 ### Scheduling Parameters
 
@@ -102,5 +127,5 @@ helm upgrade glide-gateway ./charts/glide --values custom.values.yaml --install
 | `affinity`                                      | Affinity for pod assignment                                                              | `{}`    |
 | `podDisruptionBudget.enabled`                   | Enabled Pod Disruption Budget (highly recommended)                                       | `true`  |
 | `podDisruptionBudget.minAvailable`              | Minium number of available replicas during disruption (not less than two is recommended) | `2`     |
-| `podDisruptionBudget.maxUnavailable`            | Max number of unavailable replicas at the same time                                      | `1`     |
+| `podDisruptionBudget.maxUnavailable`            | Max number of unavailable replicas at the same time                                      | `""`    |
 

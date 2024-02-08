@@ -48,7 +48,7 @@ glide:
   ##
   args: ["--config=/etc/glide/config.yaml"]
 
-  ## @param glide.port Override default Glide HTTP server port (must correspond to a value in the config)
+  ## @param glide.ports.gatewayHTTP Override default Glide HTTP server port
   ##
   ports:
     gatewayHTTP: 9099
@@ -56,7 +56,7 @@ glide:
   ## @param glide.config Glide declarative configuration (deployed as a configmap)
   ## ref: https://glide.einstack.ai
   ##
-  config:
+  config: |
     api:
       http:
         host: 0.0.0.0
