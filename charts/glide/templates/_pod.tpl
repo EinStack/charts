@@ -20,20 +20,56 @@ containers:
   {{- end }}
   image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
   imagePullPolicy: {{ .Values.image.pullPolicy }}
+  {{- if .Values.glide.command }}
+  command:
+    {{- toYaml .Values.glide.command | nindent 12 }}
+  {{- end }}
+  {{- if .Values.glide.args }}
+  args:
+    {{- toYaml .Values.glide.args | nindent 12 }}
+  {{- end }}
+  {{- if .Values.glide.extraEnvVars }}
+  env:
+    {{- toYaml .Values.glide.extraEnvVars | nindent 12 }}
+  {{- end }}
+  {{- if or .Values.glide.extraEnvVars .Values.glide.extraEnvVarsSecret }}
+  envFrom:
+    {{- if .Values.glide.extraEnvVarsFromConfigmap }}
+    - configMapRef:
+        name: {{ .Values.glide.extraEnvVarsFromConfigmap }}
+    {{- end }}
+    {{- if .Values.glide.extraEnvVarsSecret }}
+    - secretRef:
+        name: {{ .Values.glide.extraEnvVarsSecret }}
+    {{- end }}
+  {{- end }}
   ports:
     - name: http
-      containerPort: 9099
+      containerPort: {{ .Values.glide.ports.gatewayHTTP }}
       protocol: TCP
   livenessProbe:
     httpGet:
-      path: /health/
+      path: /v1/health/
       port: http
   readinessProbe:
     httpGet:
-      path: /health/
+      path: /v1/health/
       port: http
   resources:
     {{- toYaml .Values.resources | nindent 12 }}
+  {{- if not .Values.glide.lifecycleHooks }}
+  lifecycle:
+    {{- toYaml .Values.glide.lifecycleHooks | nindent 12 }}
+  {{- end }}
+  volumeMounts:
+  {{- if (include "glide.configmap" .) }}
+  - name: glide-conf
+    mountPath: /etc/glide/
+  {{- end }}
+  {{- if .Values.glide.extraVolumeMounts }}
+  {{- toYaml .Values.glide.extraVolumeMounts . | nindent 8 }}
+  {{- end }}
+
 {{- with .Values.nodeSelector }}
 nodeSelector:
 {{- toYaml . | nindent 8 }}
@@ -47,4 +83,3 @@ tolerations:
 {{- toYaml . | nindent 8 }}
 {{- end }}
 {{- end }}
-

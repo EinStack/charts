@@ -42,3 +42,9 @@ spec:
       {{- end }}
       {{ include "glide.pod" . | nindent 6 }}
       hostNetwork: {{ .Values.hostNetwork }}
+      volumes:
+        {{- if (include "glide.configmap" .) }}
+        - name: glide-conf
+          configMap:
+            name: {{ include "glide.configmap" . | quote }}
+        {{- end }}

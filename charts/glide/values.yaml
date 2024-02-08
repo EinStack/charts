@@ -33,6 +33,76 @@ image:
   pullPolicy: IfNotPresent
   pullSecrets: []
 
+## @param replicaCount The number of replicas to create (more than two are recommended to have some redundancy)
+replicaCount: 3
+
+## @section Glide Configs
+##
+
+glide:
+  ## @param glide.command Override default container command (useful when using custom images)
+  ##
+  command: []
+
+  ## @param glide.args Override default container args (useful when using custom images)
+  ##
+  args: ["--config=/etc/glide/config.yaml"]
+
+  ## @param glide.port Override default Glide HTTP server port (must correspond to a value in the config)
+  ##
+  ports:
+    gatewayHTTP: 9099
+
+  ## @param glide.config Glide declarative configuration (deployed as a configmap)
+  ## ref: https://glide.einstack.ai
+  ##
+  config:
+    api:
+      http:
+        host: 0.0.0.0
+        port: 9099
+    routers:
+      language:
+        - id: default
+          models:
+            - id: openai
+              openai:
+                api_key: "abc"
+
+  ## @param glide.externalConfigmap An external existing configmap with Glide declarative configuration
+  ## ref: https://glide.einstack.ai
+  ##
+  externalConfigmap: ""
+
+  ## @param glide.extraEnvVars Array containing extra env vars to configure Kong
+  ## For example:
+  ## extraEnvVars:
+  ##  - name: GF_DEFAULT_INSTANCE_NAME
+  ##    value: my-instance
+  ##
+  extraEnvVars: []
+
+  ## @param glide.extraEnvVarsFromConfigmap ConfigMap containing extra env vars to configure Glide
+  ##
+  extraEnvVarsFromConfigmap: ""
+
+  ## @param kong.extraEnvVarsSecret Secret containing extra env vars to configure Glide (in case of sensitive data like API secrets)
+  ##
+  extraEnvVarsSecret: ""
+
+  ## @param glide.lifecycleHooks Lifecycle hooks (Glide container)
+  ## ref: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/
+  ##
+  lifecycleHooks: {}
+
+  ## @param extraVolumes Array of extra volumes to be added to the Glide deployment. Requires setting `extraVolumeMounts`
+  ##
+  extraVolumes: []
+
+  ## @param glide.extraVolumeMounts Array of extra volume mounts to be added to the Glide Container. Normally used with `extraVolumes`.
+  ##
+  extraVolumeMounts: []
+
 ## Glide container's resource requests and limits
 ## ref: http://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/
 ## @param resources.requests [object] The requested resources for the init container
@@ -41,9 +111,6 @@ image:
 resources:
   limits: {}
   requests: {}
-
-## @param replicaCount The number of replicas to create (more than two are recommended to have some redundancy)
-replicaCount: 3
 
 ## @param podAnnotations Pod annotations
 ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
@@ -223,3 +290,4 @@ podDisruptionBudget:
   enabled: true
   minAvailable: "2"
   maxUnavailable: ""
+

@@ -11,6 +11,17 @@ Expand the name of the chart.
 {{- end }}
 
 {{/*
+Return the name of the configmap to be used for declarative configuration
+*/}}
+{{- define "glide.configmap" -}}
+{{- if .Values.glide.externalConfigmap -}}
+  {{- .Values.glide.externalConfigmap -}}
+{{- else if .Values.glide.config -}}
+  {{- printf "%s-config" (include "glide.name" .) | trunc 63 | trimSuffix "-"  -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
 Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 If release name contains chart name it will be used as a full name.
