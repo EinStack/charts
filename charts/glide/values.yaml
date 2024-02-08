@@ -74,6 +74,11 @@ glide:
   ##
   externalConfigmap: ""
 
+  ## @param glide.apiKeySecret An external existing secret with API keys referenced in the config (e.g. OPENAI_API_KEY)
+  ## ref: https://glide.einstack.ai
+  ##
+  apiKeySecret: ""
+
   ## @param glide.extraEnvVars Array containing extra env vars to configure Kong
   ## For example:
   ## extraEnvVars:
@@ -86,16 +91,16 @@ glide:
   ##
   extraEnvVarsFromConfigmap: ""
 
-  ## @param kong.extraEnvVarsSecret Secret containing extra env vars to configure Glide (in case of sensitive data like API secrets)
+  ## @param glide.extraEnvVarSecrets An array of secrets containing extra sensitive env vars to configure Glide
   ##
-  extraEnvVarsSecret: ""
+  extraEnvVarSecrets: []
 
   ## @param glide.lifecycleHooks Lifecycle hooks (Glide container)
   ## ref: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/
   ##
   lifecycleHooks: {}
 
-  ## @param extraVolumes Array of extra volumes to be added to the Glide deployment. Requires setting `extraVolumeMounts`
+  ## @param glide.extraVolumes Array of extra volumes to be added to the Glide deployment. Requires setting `extraVolumeMounts`
   ##
   extraVolumes: []
 
@@ -196,7 +201,7 @@ dnsPolicy: ""
 ## @param dnsConfig Custom DNS config. Required when DNS policy is None.
 dnsConfig: {}
 
-## Kubernetes configuration. For minikube, set this to NodePort, elsewhere use LoadBalancer
+## Kubernetes configuration. For minikube, set this to NodePort, elsewhere use ClusterIP
 ##
 service:
   ## @param service.type Kubernetes Service type
@@ -204,7 +209,7 @@ service:
   type: ClusterIP
   ## @param service.port Kubernetes Service port
   ##
-  port: 80
+  port: 9099
   ## @param service.annotations Additional custom annotations for Gitea service
   ##
   annotations: {}

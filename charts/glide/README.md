@@ -15,7 +15,7 @@ Then, you need to create a custom `values.yaml` file to override the secret name
 ```bash
 # save as custom.values.yaml, for example
 glide:
-    extraEnvVarsSecret: "api-keys"
+    apiKeySecret: "api-keys"
 ```
 
 ### Install from Source

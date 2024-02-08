@@ -32,15 +32,21 @@ containers:
   env:
     {{- toYaml .Values.glide.extraEnvVars | nindent 12 }}
   {{- end }}
-  {{- if or .Values.glide.extraEnvVars .Values.glide.extraEnvVarsSecret }}
+  {{- if or .Values.glide.extraEnvVars .Values.glide.apiKeySecret }}
   envFrom:
     {{- if .Values.glide.extraEnvVarsFromConfigmap }}
     - configMapRef:
         name: {{ .Values.glide.extraEnvVarsFromConfigmap }}
     {{- end }}
-    {{- if .Values.glide.extraEnvVarsSecret }}
+    {{- if .Values.glide.apiKeySecret }}
     - secretRef:
-        name: {{ .Values.glide.extraEnvVarsSecret }}
+        name: {{ .Values.glide.apiKeySecret }}
+    {{- end }}
+    {{- if .Values.glide.extraEnvVarSecrets }}
+    {{- range .Values.glide.extraEnvVarSecrets }}
+    - secretRef:
+        name: {{ . }}
+    {{- end }}
     {{- end }}
   {{- end }}
   ports:
