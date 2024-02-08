@@ -53,7 +53,7 @@ glide:
   ports:
     gatewayHTTP: 9099
 
-  ## @param glide.config Glide declarative configuration (deployed as a configmap)
+  ## @param glide.config [default: "see values.yaml file"] Glide declarative configuration (deployed as a configmap)
   ## ref: https://glide.einstack.ai
   ##
   config: |

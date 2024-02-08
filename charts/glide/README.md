@@ -48,35 +48,24 @@ helm upgrade glide-gateway ./charts/glide --values custom.values.yaml --install
 
 ### Glide Configs
 
-| Name                              | Description                                                                                         | Value                                                                                                                                                                                     |
-| --------------------------------- | --------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `glide.command`                   | Override default container command (useful when using custom images)                                | `[]`                                                                                                                                                                                      |
-| `glide.args`                      | Override default container args (useful when using custom images)                                   | `["--config=/etc/glide/config.yaml"]`                                                                                                                                                     |
-| `glide.ports.gatewayHTTP`         | Override default Glide HTTP server port                                                             | `9099`                                                                                                                                                                                    |
-| `glide.config`                    | Glide declarative configuration (deployed as a configmap)                                           | `api:
-  http:
-    host: 0.0.0.0
-    port: 9099
-routers:
-  language:
-    - id: default
-      models:
-        - id: openai
-          openai:
-            api_key: "${env:OPENAI_API_KEY}"
-` |
-| `glide.externalConfigmap`         | An external existing configmap with Glide declarative configuration                                 | `""`                                                                                                                                                                                      |
-| `glide.apiKeySecret`              | An external existing secret with API keys referenced in the config (e.g. OPENAI_API_KEY)            | `""`                                                                                                                                                                                      |
-| `glide.extraEnvVars`              | Array containing extra env vars to configure Kong                                                   | `[]`                                                                                                                                                                                      |
-| `glide.extraEnvVarsFromConfigmap` | ConfigMap containing extra env vars to configure Glide                                              | `""`                                                                                                                                                                                      |
-| `glide.extraEnvVarSecrets`        | An array of secrets containing extra sensitive env vars to configure Glide                          | `[]`                                                                                                                                                                                      |
-| `glide.lifecycleHooks`            | Lifecycle hooks (Glide container)                                                                   | `{}`                                                                                                                                                                                      |
-| `glide.extraVolumes`              | Array of extra volumes to be added to the Glide deployment. Requires setting `extraVolumeMounts`    | `[]`                                                                                                                                                                                      |
-| `glide.extraVolumeMounts`         | Array of extra volume mounts to be added to the Glide Container. Normally used with `extraVolumes`. | `[]`                                                                                                                                                                                      |
-| `resources.requests`              | The requested resources for the init container                                                      | `{}`                                                                                                                                                                                      |
-| `resources.limits`                | The resources limits for the init container                                                         | `{}`                                                                                                                                                                                      |
-| `podAnnotations`                  | Pod annotations                                                                                     | `{}`                                                                                                                                                                                      |
-| `podLabels`                       | Add additional labels to the pod                                                                    | `{}`                                                                                                                                                                                      |
+| Name                              | Description                                                                                         | Value                                 |
+| --------------------------------- | --------------------------------------------------------------------------------------------------- | ------------------------------------- |
+| `glide.command`                   | Override default container command (useful when using custom images)                                | `[]`                                  |
+| `glide.args`                      | Override default container args (useful when using custom images)                                   | `["--config=/etc/glide/config.yaml"]` |
+| `glide.ports.gatewayHTTP`         | Override default Glide HTTP server port                                                             | `9099`                                |
+| `glide.config`                    | Glide declarative configuration (deployed as a configmap)                                           | `"see values.yaml file"`              |
+| `glide.externalConfigmap`         | An external existing configmap with Glide declarative configuration                                 | `""`                                  |
+| `glide.apiKeySecret`              | An external existing secret with API keys referenced in the config (e.g. OPENAI_API_KEY)            | `""`                                  |
+| `glide.extraEnvVars`              | Array containing extra env vars to configure Kong                                                   | `[]`                                  |
+| `glide.extraEnvVarsFromConfigmap` | ConfigMap containing extra env vars to configure Glide                                              | `""`                                  |
+| `glide.extraEnvVarSecrets`        | An array of secrets containing extra sensitive env vars to configure Glide                          | `[]`                                  |
+| `glide.lifecycleHooks`            | Lifecycle hooks (Glide container)                                                                   | `{}`                                  |
+| `glide.extraVolumes`              | Array of extra volumes to be added to the Glide deployment. Requires setting `extraVolumeMounts`    | `[]`                                  |
+| `glide.extraVolumeMounts`         | Array of extra volume mounts to be added to the Glide Container. Normally used with `extraVolumes`. | `[]`                                  |
+| `resources.requests`              | The requested resources for the init container                                                      | `{}`                                  |
+| `resources.limits`                | The resources limits for the init container                                                         | `{}`                                  |
+| `podAnnotations`                  | Pod annotations                                                                                     | `{}`                                  |
+| `podLabels`                       | Add additional labels to the pod                                                                    | `{}`                                  |
 
 ### Security Parameters
 
