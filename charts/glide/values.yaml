@@ -56,7 +56,7 @@ glide:
   ## @param glide.config [default: "see values.yaml file"] Glide declarative configuration (deployed as a configmap)
   ## ref: https://glide.einstack.ai
   ##
-  config: |
+  config:
     api:
       http:
         host: 0.0.0.0
