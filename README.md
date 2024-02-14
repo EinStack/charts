@@ -1,5 +1,7 @@
 # Helm Charts
 
+[![Artifact Hub](https://img.shields.io/endpoint?url=https://artifacthub.io/badge/repository/einstack)](https://artifacthub.io/packages/search?repo=einstack)
+
 This repository contains [Helm](https://helm.sh/) charts for [the EinStack projects](https://github.com/EinStack/).
 
 ## Installation
