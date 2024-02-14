@@ -18,6 +18,21 @@ glide:
     apiKeySecret: "api-keys"
 ```
 
+### Install from ArtifactHub
+
+Add the EinStack chart registry to your local Helm:
+
+```bash
+helm repo add einstack https://einstack.github.io/helm-charts
+helm repo update
+```
+
+Then, you should be able to install Glide via:
+
+```bash
+helm upgrade glide-gateway einstack/glide --values custom.values.yaml --install
+```
+
 ### Install from Source
 
 Close this repository and run the following Helm command to install Glide into a cluster you have authenticated with:
