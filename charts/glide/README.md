@@ -1,5 +1,7 @@
 # Glide Helm Chart
 
+[![Artifact Hub](https://img.shields.io/endpoint?url=https://artifacthub.io/badge/repository/glide)](https://artifacthub.io/packages/search?repo=glide)
+
 The helm chart installs [Glide](https://github.com/EinStack/glide/) in a Kubernetes cluster.
 
 ## Installation
