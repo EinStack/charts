@@ -23,7 +23,7 @@ glide:
 Add the EinStack chart registry to your local Helm:
 
 ```bash
-helm repo add einstack https://einstack.github.io/helm-charts
+helm repo add einstack https://einstack.github.io/charts
 helm repo update
 ```
 
